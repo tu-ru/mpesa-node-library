@@ -1,8 +1,13 @@
 language: node_js
-sudo: false
 node_js:
-  - "8.6"
+  - "20" # Specify the Node.js version or use latest version if you want
+
+# Install dependencies
 install:
   - npm install
+
+# Run the build step if needed
 script:
-  - npm test
+  - npm run format # Format code
+  - npm run test # Run tests
+  - npm run test-integration # Run tests with NYC covergae

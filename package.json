@@ -6,27 +6,50 @@
     "type": "git",
     "url": "https://github.com/safaricom/mpesa-node-library"
   },
-  "main": "src/m-pesa.js",
+  "type": "module",
+  "main": "mpesa.mjs",
   "dependencies": {
-    "axios": "^0.19.0"
+    "axios": "^1.5.0",
+    "globals": "^15.11.0"
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
-    "dotenv": "^5.0.1",
-    "expect.js": "^0.3.1",
-    "express": "^4.16.3",
-    "got": "^8.3.0",
-    "jsdoc": "^3.5.5",
-    "mocha": "^5.0.1",
-    "ngrok": "^3.0.0",
-    "nyc": "^12.0.2",
-    "standard": "^11.0.0",
-    "supertest": "^3.0.0"
+    "@babel/cli": "^7.25.9",
+    "@babel/core": "^7.25.9",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.25.9",
+    "@babel/register": "^7.25.9",
+    "chai": "^5.1.2",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.57.1",
+    "express": "^4.21.1",
+    "got": "^12.5.3",
+    "jsdoc": "^4.0.2",
+    "mocha": "^10.2.0",
+    "ngrok": "^5.0.0-beta.2",
+    "nyc": "^17.1.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.11.0",
+    "uuid": "^10.0.0"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/"
+    ],
+    "all": true,
+    "check-coverage": true,
+    "branches": 80,
+    "lines": 80,
+    "functions": 80,
+    "statements": 80
   },
   "scripts": {
-    "test": "npm run test-unit && npm run test-integration",
-    "test-unit": "mocha tests/unit/*.test.js",
-    "test-integration": "nyc --reporter=text mocha --exit tests/integrations/*.js"
+    "test": "mocha --require @babel/polyfill --require @babel/register 'tests/endpoints/**/*.spec.js'",
+    "test-integration": "nyc --reporter=text --reporter=html mocha --require @babel/polyfill --require @babel/register --exit 'tests/endpoints/**/*.js'",
+    "format": "prettier --write ."
   },
   "keywords": [
     "mpesa",
