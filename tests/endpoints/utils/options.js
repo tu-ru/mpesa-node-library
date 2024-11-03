@@ -27,7 +27,7 @@ export function createOptionsForMpesaQuery() {
     passKey: configs.passKey,
     consumerSecret: configs.consumerSecret,
     consumerKey: configs.consumerKey,
-    checkoutRequestId: "ws_CO_31102024094209678110081288",
+    checkoutRequestId: "ws_CO_03112024094702738110081288",
   };
 }
 
@@ -131,7 +131,7 @@ export function createOptionsForTransactionStatusApi(NGROK_URL) {
     receiverParty: parseInt(configs.partyA, 10),
     transactionId: "NEF61H8J60",
     initiator: configs.initiatorName,
-    OriginatorConversationID: "AG_20190826_0000777ab7d848b9e721",
+    OriginatorConversationID: "AG_20241103_20106c21d3528ac5d558",
     queueUrl: `${NGROK_URL}/transactionStatusApi/queue`,
     resultUrl: `${NGROK_URL}/transactionStatusApi/result`,
   };

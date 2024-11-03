@@ -15,9 +15,13 @@ describe("Reversal API Test", function () {
     teardown = td;
   });
 
-  after(async function () {
-    // Teardown ngrok and close server
+  after(async function() {
+    // Execute teardown to disconnect ngrok and close server
     await teardown();
+    // After closing the server, terminate the test after 5 secs
+    setTimeout(() => {
+      process.exit(0);
+    }, 4000);
   });
 
   it("Should initiate a reversal and receive a result or timeout callback", async function () {

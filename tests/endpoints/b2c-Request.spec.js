@@ -15,9 +15,13 @@ describe("B2C Payment API with OAuth", function () {
     teardown = td;
   });
 
-  after(async function () {
+  after(async function() {
     // Execute teardown to disconnect ngrok and close server
     await teardown();
+    // After closing the server, terminate the test after 5 secs
+    setTimeout(() => {
+      process.exit(0);
+    }, 4000);
   });
 
   it("Should send B2C payment and receive result or timeout callback", async function () {

@@ -15,9 +15,13 @@ describe("Transaction Status API", function () {
     teardown = td;
   });
 
-  after(async function () {
-    // Tear down ngrok connection
+  after(async function() {
+    // Execute teardown to disconnect ngrok and close server
     await teardown();
+    // After closing the server, terminate the test after 5 secs
+    setTimeout(() => {
+      process.exit(0);
+    }, 4000);
   });
 
   it("Should retrieve transaction status and receive result or timeout callback", async function () {

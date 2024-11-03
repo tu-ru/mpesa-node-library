@@ -14,8 +14,13 @@ describe("B2B Account top up API with OAuth ", function () {
     NGROK_URL = url;
     teardown = td;
   });
-  after(async function () {
+  after(async function() {
+    // Execute teardown to disconnect ngrok and close server
     await teardown();
+    // After closing the server, terminate the test after 5 secs
+    setTimeout(() => {
+      process.exit(0);
+    }, 4000);
   });
 
   it("Should simulate a B2B account top up and receive a response body and result body", async function () {

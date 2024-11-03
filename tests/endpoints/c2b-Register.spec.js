@@ -15,9 +15,13 @@ describe("C2B Register URL API with OAuth", function () {
     teardown = td;
   });
 
-  after(async function () {
+  after(async function() {
     // Execute teardown to disconnect ngrok and close server
     await teardown();
+    // After closing the server, terminate the test after 5 secs
+    setTimeout(() => {
+      process.exit(0);
+    }, 4000);
   });
   it("Should register C2B validation and confirmation URLs and confirm success", async function () {
     // Hit the C2B Register URL API

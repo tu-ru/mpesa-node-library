@@ -35,7 +35,7 @@ async function transactionStatusApi({
   remarks = "OK!",
   occasion = "TEST!",
   initiator,
-  commandId = "transactionStatusApiQuery",
+  commandId = "TransactionStatusQuery",
   baseURL,
   certPath,
   securityCredential,
@@ -52,7 +52,7 @@ async function transactionStatusApi({
   });
   try {
     const responseBody = await req.post(
-      "/mpesa/transactionStatusApi/v1/query",
+      "/mpesa/transactionstatus/v1/query",
       {
         Initiator: initiator,
         SecurityCredential: encryptSecurityCredential(
