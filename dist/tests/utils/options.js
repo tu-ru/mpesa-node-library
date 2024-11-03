@@ -4,7 +4,7 @@ import {
   IdentifierTypes,
   responseTypes,
   trxCodeTypes,
-} from "../../../lib/apis/utils/constants.js";
+} from "../../../lib/core/utils/constants.js";
 
 export function createOptionsForQrCode() {
   return {
