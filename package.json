@@ -47,8 +47,8 @@
     "statements": 80
   },
   "scripts": {
-    "test": "mocha --require @babel/polyfill --require @babel/register 'tests/endpoints/**/*.spec.js'",
-    "test-integration": "nyc --reporter=text --reporter=html mocha --require @babel/polyfill --require @babel/register --exit 'tests/endpoints/**/*.js'",
+    "test": "mocha --require @babel/polyfill --require @babel/register 'dist/tests/**/*.spec.js'",
+    "test-integration": "nyc --reporter=text --reporter=html mocha --require @babel/polyfill --require @babel/register --exit 'dist/tests/**/*.js'",
     "format": "prettier --write ."
   },
   "keywords": [

@@ -49,7 +49,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-tests/.env.local
+dist/.env.local
 
 # yarn error-log
 yarn-error.log

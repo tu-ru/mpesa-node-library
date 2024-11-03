@@ -9,5 +9,5 @@ install:
 # Run the build step if needed
 script:
   - npm run format # Format code
-  - npm run test # Run tests
-  - npm run test-integration # Run tests with NYC covergae
+  - npm run test # Run dist
+  - npm run test-integration # Run dist with NYC covergae
