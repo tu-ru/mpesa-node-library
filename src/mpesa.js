@@ -1,4 +1,4 @@
-import mpesaAPIs from "./src/api/endpoints/index.js";
+import mpesaAPIs from "./api/endpoints/index.js";
 import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables from .env
