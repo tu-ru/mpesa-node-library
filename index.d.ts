@@ -61,7 +61,7 @@ export interface MpesaSimulateApiOptions {
   passKey: string;
 }
 
-export interface mpesaQueryOptions {
+export interface mpesaQueryApiOptions {
   checkoutRequestId: string;
   shortCode: number;
   passKey: string;
@@ -182,7 +182,7 @@ declare const mpesaAPIs: {
   c2BRegister(options: C2BRegisterOptions): Promise<never>;
   c2bSimulateApi(options: c2bSimulateApiOptions): Promise<never>;
   mpesaSimulateApi(options: MpesaSimulateApiOptions): Promise<never>;
-  mpesaQueryApi(options: mpesaQueryOptions): Promise<never>;
+  mpesaQueryApi(options: mpesaQueryApiOptions): Promise<never>;
   reversalsApi(options: reversalsApiOptions): Promise<never>;
   transactionStatusApi(options: transactionStatusApiOptions): Promise<never>;
   generateQrCodeApi(options: generateQrCodeApiOptions): Promise<never>;
