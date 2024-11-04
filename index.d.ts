@@ -50,7 +50,6 @@ export interface MpesaSimulateApiOptions {
 export interface mpesaQueryApiOptions {
   checkoutRequestId: string;
   shortCode: number;
-  passKey: string;
 }
 
 export interface reversalsApiOptions {
