@@ -1,8 +1,4 @@
 export interface BalanceQueryOptions {
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
   shortCode: number;
   idType: number;
   queueUrl: string;
@@ -22,8 +18,6 @@ export interface b2cRequestApiOptions {
   initiatorName: string;
   remarks: string;
   occasion: string;
-  consumerKey: string;
-  consumerSecret: string;
 }
 
 export interface C2BRegisterOptions {
@@ -31,9 +25,6 @@ export interface C2BRegisterOptions {
   validationUrl: string;
   shortCode: number;
   responseType: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
 }
 
 export interface c2bSimulateApiOptions {
@@ -42,14 +33,9 @@ export interface c2bSimulateApiOptions {
   billRefNumber: string;
   commandId: string;
   shortCode: number;
-  consumerKey: string;
-  consumerSecret: string;
 }
 
 export interface MpesaSimulateApiOptions {
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
   msisdn1: number;
   msisdn2: number;
   amount: number;
@@ -65,9 +51,6 @@ export interface mpesaQueryApiOptions {
   checkoutRequestId: string;
   shortCode: number;
   passKey: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
 }
 
 export interface reversalsApiOptions {
@@ -81,11 +64,6 @@ export interface reversalsApiOptions {
   initiator: string;
   receiverIdType: string;
   commandId: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
-  securityCredential: string;
 }
 
 export interface transactionStatusApiOptions {
@@ -98,11 +76,6 @@ export interface transactionStatusApiOptions {
   occasion: string;
   initiator: string;
   commandId: string;
-  securityCredential: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
 }
 
 export interface generateQrCodeApiOptions {
@@ -112,14 +85,10 @@ export interface generateQrCodeApiOptions {
   trxCode: "BG" | "WA" | "PB" | "SM" | "SB";
   cpi: string;
   size: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
 }
 
 export interface b2bTopUpApiOptions {
   initiator: string;
-  securityCredential: string;
   commandId: string;
   senderIdentifierType: number;
   receiverIdentifierType: number;
@@ -131,15 +100,10 @@ export interface b2bTopUpApiOptions {
   remarks: string;
   queueTimeOutURL: string;
   resultURL: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
 }
 
 export interface businessPaybillApiOptions {
   initiator: string;
-  securityCredential: string;
   commandId: string;
   senderIdentifierType: string;
   receiverIdentifierType: string;
@@ -151,15 +115,10 @@ export interface businessPaybillApiOptions {
   remarks: string;
   queueTimeOutURL: string;
   resultURL: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
 }
 
 export interface TaxRemittanceOptions {
   initiator: string;
-  securityCredential: string;
   commandId: string;
   senderIdentifierType: string;
   receiverIdentifierType: string;
@@ -170,10 +129,6 @@ export interface TaxRemittanceOptions {
   remarks: string;
   queueTimeOutURL: string;
   resultURL: string;
-  consumerKey: string;
-  consumerSecret: string;
-  baseURL: string;
-  certPath: string;
 }
 
 declare const mpesaAPIs: {

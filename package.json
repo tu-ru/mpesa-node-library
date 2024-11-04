@@ -10,7 +10,8 @@
   "main": "src/mpesa.js",
   "dependencies": {
     "axios": "^1.5.0",
-    "globals": "^15.11.0"
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.9",
@@ -30,14 +31,14 @@
     "uuid": "^10.0.0"
   },
   "scripts": {
-    "test": "mocha --require @babel/polyfill --require @babel/register 'lib/tests/apis/**/*.spec.js'"
+    "test": "mocha --require @babel/polyfill --require @babel/register 'lib/tests/apis/**/*.spec.js'",
+    "format": "prettier --write ."
   },
   "keywords": [
     "mpesa",
     "mpesa-node",
     "mpesa-api"
   ],
-
   "author": "Geoffrey Mureithi",
   "license": "MIT"
 }
