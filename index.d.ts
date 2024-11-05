@@ -44,7 +44,6 @@ export interface MpesaSimulateApiOptions {
   transactionDesc: string;
   transactionType: string;
   shortCode: number;
-  passKey: string;
 }
 
 export interface mpesaQueryApiOptions {
@@ -130,7 +129,7 @@ export interface TaxRemittanceOptions {
   resultURL: string;
 }
 
-declare const mpesaAPIs: {
+declare const mpesa: {
   balanceQueryApi(options: BalanceQueryOptions): Promise<never>;
   b2cRequestApi(options: b2cRequestApiOptions): Promise<never>;
   c2BRegister(options: C2BRegisterOptions): Promise<never>;
@@ -145,4 +144,4 @@ declare const mpesaAPIs: {
   taxRemittanceApi(options: TaxRemittanceOptions): Promise<never>;
 };
 
-export default mpesaAPIs;
+export default mpesa;

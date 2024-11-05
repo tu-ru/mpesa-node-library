@@ -11,7 +11,7 @@ import b2bTopUpApi from "./lib/core/apis/b2b-Topup.js";
 import businessPaybillApi from "./lib/core/apis/business-Paybill.js";
 import taxRemittanceApi from "./lib/core/apis/tax-Remittance.js";
 
-const mpesaAPIs = {
+const mpesa = {
   balanceQueryApi,
   b2cRequestApi,
   c2bRegisterApi,
@@ -25,4 +25,4 @@ const mpesaAPIs = {
   businessPaybillApi,
   taxRemittanceApi,
 };
-export default mpesaAPIs;
+export default mpesa;
