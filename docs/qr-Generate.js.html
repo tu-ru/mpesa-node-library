@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>qr-Generate.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">qr-Generate.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import {
+  generateOAuthToken,
+  logErrorDetails,
+  throwErrorMessages,
+} from "../utils/helpers.js";
+import { trxCodeTypes } from "../utils/constants.js";
+
+/**
+ * @name generateQrCode
+ * @description This generates a Dynamic QR which enables Safaricom M-PESA customers who have My Safaricom App or M-PESA app, to scan a QR (Quick Response) code, to capture till number and amount
+ * @summary Generates QR codes for customers using My Safaricom app
+ * @see {@link https://developer.safaricom.co.ke/APIs/DynamicQRCode open external link}
+ * @param {Object} options Options for the QR code generation request.
+ * @param {string} options.merchantName - The name of the company or M-Pesa merchant requesting the QR code.
+ * @param {string} options.refNo A unique reference number for the transaction.
+ * @param {number} options.amount The total amount for the sale or transaction.
+ * @param {string} options.trxCode Transaction type. Supported types: BG, WA, PB, SM, SB.
+ * @param {string} options.cpi Credit Party Identifier (e.g., mobile number, business number).
+ * @param {string} options.size Size of the QR code image in pixels. QR code image will always be square.
+ * @param {boolean} [options.proErrorLogging] Logs out advanced error details - good for debugging
+ * @returns {Promise&lt;Object>} generateQrcodeResponse.
+ */
+async function generateQrCode({
+  merchantName,
+  refNo,
+  amount,
+  trxCode,
+  cpi,
+  size,
+  proErrorLogging = false,
+}) {
+  /**
+   * @param {string} validTrxCodes - Only support: buy goods: "BG" - withdraw agent till: "WA" - paybill business number: "PB" - send money msisdn: "SM" and end to business msisdn: "SB"
+   */
+  const validTrxCodes = Object.values(trxCodeTypes);
+  if (!validTrxCodes.includes(trxCode)) {
+    throw new Error(
+      `Invalid trxCode provided. Must be one of: ${validTrxCodes.join(", ")}`,
+    );
+  }
+  try {
+    const { accessToken, baseURL } = await generateOAuthToken();
+    const req = axios.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const responseBody = await req.post("/mpesa/qrcode/v1/generate", {
+      MerchantName: merchantName,
+      RefNo: refNo,
+      Amount: amount,
+      TrxCode: trxCode,
+      CPI: cpi,
+      Size: size,
+    });
+    return { generateQrcodeResponse: responseBody.data };
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for generateQrcode has been initialized",
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/qrcode/v1/generate",
+          method: "POST",
+          payload: {
+            merchantName,
+            refNo,
+            amount,
+            trxCode,
+            cpi,
+            size,
+          },
+        },
+        "QR code generation error details:",
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+
+export { generateQrCode };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

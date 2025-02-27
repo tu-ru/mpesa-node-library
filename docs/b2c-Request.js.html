@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>b2c-Request.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">b2c-Request.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import { CommandIDs } from "../utils/constants.js";
+import {
+  callbackTrigger,
+  encryptSecurityCredential,
+  generateOAuthToken,
+  handleCallbacks,
+  logErrorDetails,
+  originatorID,
+  throwErrorMessages, validateFormatPhone,
+  validateUrl
+} from "../utils/helpers.js";
+
+// Globals
+let callbackHandlerInitialized = false;
+let conditionalCallbackData = {};
+
+/**
+ * @name b2cRequest
+ * @description B2C API can be used in several scenarios by businesses that require to either make Salary Payments, Cashback payments, Promotional Payments(e.g. betting winning payouts), winnings, financial institutions withdrawal of funds, loan disbursements, etc.
+ * @summary B2C payments involve a business sending money to an individual. This is a direct transaction from a business shortcode to a consumer's mobile number (MSISDN).
+ * @see {@link https://developer.safaricom.co.ke/APIs/BusinessToCustomer open external link}
+ * @param {Object} options Options for the B2C payment request.
+ * @param {number} options.partyA The B2C organization shortcode sending the money.
+ * @param {string} options.partyB Customer mobile number (with country code, e.g., 254).
+ * @param {number} options.amount The amount being transacted.
+ * @param {string} options.remarks Information to be associated with the transaction.
+ * @param {string} options.occasion Information to be associated with the transaction.
+ * @param {string} options.QueueTimeOutURL URL for timeout notifications.
+ * @param {string} options.resultUrl URL for M-PESA to send payment processing notifications.
+ * @param {string} options.commandId Unique command specifying B2C transaction type (e.g., BusinessPayment).
+ * @param {string} options.initiatorName API user created by Business Administrator for B2C transactions.
+ * @param {boolean} [options.proErrorLogging=false] Logs out advanced error details - good for debugging.
+ * @return {Promise&lt;object>} b2cRequestResponse and (optional) conditionalCallbackData. */
+async function b2cRequest({
+  partyA,
+  partyB,
+  amount,
+  QueueTimeOutURL,
+  remarks,
+  occasion,
+  resultUrl,
+  commandId,
+  initiatorName = "",
+  proErrorLogging = false,
+}) {
+  if (!callbackHandlerInitialized) {
+    console.info(
+      "\x1b[42m\x1b[30m\x1b[1m The default balance query callback handler ('handleB2cRequestCallbacks') was not called. Ignore if handling manually.\x1b[0m",
+    );
+  }
+  /**
+   * @param {string} validCommandIds - loops through object values with strings "SalaryPayment", "BusinessPayment" PromotionPayment"
+   */
+  const validCommandIds = Object.values(CommandIDs);
+  if (!validCommandIds.includes(commandId)) {
+    throw new Error(
+      `Invalid commandId provided. Must be one of: ${validCommandIds.join(", ")}`,
+    );
+  }
+  const _msisdn = validateFormatPhone(partyB)
+  try {
+    validateUrl(resultUrl, "resultUrl");
+    validateUrl(QueueTimeOutURL, "queueTimeOutUrl");
+    const OriginatorConversationID = originatorID();
+    const { accessToken, baseURL } = await generateOAuthToken();
+
+    const req = axios.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseBody = await req.post("/mpesa/b2c/v3/paymentrequest", {
+      OriginatorConversationID,
+      InitiatorName: initiatorName,
+      SecurityCredential: encryptSecurityCredential(),
+      CommandID: commandId,
+      Amount: amount,
+      PartyA: partyA,
+      PartyB: _msisdn,
+      Remarks: remarks,
+      QueueTimeOutURL: QueueTimeOutURL,
+      ResultURL: resultUrl,
+      Occasion: occasion
+    });
+
+    conditionalCallbackData = await callbackTrigger(callbackHandlerInitialized);
+
+    return { b2cRequestResponse: responseBody.data, conditionalCallbackData};
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for b2cRequest has been initialized",
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/b2c/v3/paymentrequest",
+          method: "POST",
+          payload: {
+            partyA,
+            _msisdn,
+            amount,
+            QueueTimeOutURL,
+            resultUrl,
+            commandId,
+            initiatorName,
+            occasion,
+            remarks
+          },
+        },
+        "B2C transaction error details:",
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+const handleB2cRequestCallbacks = async (app) => {
+  callbackHandlerInitialized = true;
+  await handleCallbacks(app, "b2cRequest");
+};
+export { b2cRequest, handleB2cRequestCallbacks };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

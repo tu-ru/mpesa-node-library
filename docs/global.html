@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Global - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Global</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="C2BRegister"><span class="type-signature"></span>C2BRegister<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Registers callback validation and confirmation URLs on M-Pesa to receive payment notifications for your paybill/till numbers.</p></p>
+
+
+
+<div class="description">
+    <p>Register URL API works hand in hand with Customer to Business (C2B) APIs and allows receiving payment notifications to your paybill. This API enables you to register the callback URLs via which you shall receive notifications for payments to your pay bill/till numbers</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="c2b-Register.js.html">c2b-Register.js</a>, <a href="c2b-Register.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/CustomerToBusinessRegisterURL">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="b2cRequest"><span class="type-signature"></span>b2cRequest<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>B2C payments involve a business sending money to an individual. This is a direct transaction from a business shortcode to a consumer's mobile number (MSISDN).</p></p>
+
+
+
+<div class="description">
+    <p>B2C API can be used in several scenarios by businesses that require to either make Salary Payments, Cashback payments, Promotional Payments(e.g. betting winning payouts), winnings, financial institutions withdrawal of funds, loan disbursements, etc.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="b2c-Request.js.html">b2c-Request.js</a>, <a href="b2c-Request.js.html#line18">line 18</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/BusinessToCustomer">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="b2cTopUp"><span class="type-signature"></span>b2cTopUp<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Transfers funds from your MMF/Working account to the recipient's utility account for disbursement to a B2C shortcode.</p></p>
+
+
+
+<div class="description">
+    <p>This API enables you to load funds to a B2C shortcode directly for disbursement. The transaction moves money from your MMF/Working account to the recipient’s utility account.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="b2c-Topup.js.html">b2c-Topup.js</a>, <a href="b2c-Topup.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/B2CAccountTopUp">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="balanceQuery"><span class="type-signature"></span>balanceQuery<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Retrieves the balance of a short code associated with the developer account, supporting B2C, buy goods, and pay bill accounts.</p></p>
+
+
+
+<div class="description">
+    <p>The Account Balance API is used to request the account balance of a short code. This can be used for both B2C, buy goods and pay bill accounts.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="balance-Query.js.html">balance-Query.js</a>, <a href="balance-Query.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/AccountBalance">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="businessPaybill"><span class="type-signature"></span>businessPaybill<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Facilitates bill payments from a business account to a paybill number, transferring funds to the recipient’s utility account.</p></p>
+
+
+
+<div class="description">
+    <p>This API enables you to pay bills directly from your business account to a pay bill number, or a paybill store. You can use this API to pay on behalf of a consumer/requester. The transaction moves money from your MMF/Working account to the recipient’s utility account.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="business-Paybill.js.html">business-Paybill.js</a>, <a href="business-Paybill.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/BusinessPayBill">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="c2bSimulate"><span class="type-signature"></span>c2bSimulate<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Simulate a transaction from an MSISDN to a business shortcode</p></p>
+
+
+
+<div class="description">
+    <p>This function simulates a C2B (Customer to Business) transaction by initiating a payment from an MSISDN to a business shortcode.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="c2b-Simulate.js.html">c2b-Simulate.js</a>, <a href="c2b-Simulate.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/CustomerToBusinessRegisterURL">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="generateQrCode"><span class="type-signature"></span>generateQrCode<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Generates QR codes for customers using My Safaricom app</p></p>
+
+
+
+<div class="description">
+    <p>This generates a Dynamic QR which enables Safaricom M-PESA customers who have My Safaricom App or M-PESA app, to scan a QR (Quick Response) code, to capture till number and amount</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="qr-Generate.js.html">qr-Generate.js</a>, <a href="qr-Generate.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/DynamicQRCode">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="mpesaQuery"><span class="type-signature"></span>mpesaQuery<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Check transaction status of a Lipa na M-Pesa payment.</p></p>
+
+
+
+<div class="description">
+    <p>Use this API to check the status of a Lipa Na M-Pesa Online Payment.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mpesa-Query.js.html">mpesa-Query.js</a>, <a href="mpesa-Query.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/MpesaExpressQuery">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="mpesaSimulate"><span class="type-signature"></span>mpesaSimulate<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Sends a payment prompt to the customer's M-PESA registered phone number, requesting them to enter their M-PESA pin to authorize and complete payment.</p></p>
+
+
+
+<div class="description">
+    <p>Lipa na M-PESA online API also known as M-PESA express (STK Push/NI push) is a Merchant/Business initiated C2B (Customer to Business) Payment. it enables you to send a payment prompt on the customer's phone (Popularly known as STK Push Prompt) to your customer's M-PESA registered phone number requesting them to enter their M-PESA pin to authorize and complete payment.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mpesa-Simulate.js.html">mpesa-Simulate.js</a>, <a href="mpesa-Simulate.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/MpesaExpressSimulate">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="reversals"><span class="type-signature"></span>reversals<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Reverses an M-pesa transaction</p></p>
+
+
+
+<div class="description">
+    <p>Reverses a C2B M-Pesa transaction. Once a customer pays and there is a need to reverse the transaction, the organization will use this API to reverse the amount.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="reversals.js.html">reversals.js</a>, <a href="reversals.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/Reversal">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="taxRemittance"><span class="type-signature"></span>taxRemittance<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Enables one to remit tax to Kenya Revenue Authority (KRA)</p></p>
+
+
+
+<div class="description">
+    <p>This API enables businesses to remit tax to Kenya Revenue Authority (KRA). To use this API, prior integration is required with KRA for tax declaration, payment registration number (PRN) generation, and exchange of other tax-related information.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="tax-Remittance.js.html">tax-Remittance.js</a>, <a href="tax-Remittance.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/TaxRemittance">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="transactionStatus"><span class="type-signature"></span>transactionStatus<span class="type-signature"></span></h4>
+
+
+<p class="summary"><p>Check the status of a transaction.</p></p>
+
+
+
+<div class="description">
+    <p>Enables one to Check the status of an M-pesa transaction, using a unique identifier.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="transaction-Status.js.html">transaction-Status.js</a>, <a href="transaction-Status.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.safaricom.co.ke/APIs/TransactionStatus">open external link</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,253 +1,481 @@
 # Node.js M-Pesa API
+
 **M-Pesa Library for Node.js using REST API**
 
-![Node Mpesa Rest API](https://i.imgur.com/PRYk4Q3.jpg)
+![Node Mpesa Rest API](https://i.imghippo.com/files/fQO9155Kic.jpg
+)
+<div style="display: flex; justify-content: flex-end;">
+<img width="96" height="96" src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="JavaScript Logo"/>
+</div>
 
-<a href="https://standardjs.com" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="JavaScript Standard Style" width="100" align="right"></a>
-[![Build Status](https://travis-ci.org/safaricom/mpesa-node-library.svg?branch=master)](https://travis-ci.org/safaricom/mpesa-node-library)
 [![Made in Africa](https://img.shields.io/badge/Africa's%20Rising-%E2%9C%93-green.svg)](https://github.com/collections/made-in-africa)
 [![Known Vulnerabilities](https://snyk.io/test/github/safaricom/mpesa-node-library/badge.svg?targetFile=package.json)](https://snyk.io/test/github/safaricom/mpesa-node-library?targetFile=package.json)
+[![npm downloads](https://img.shields.io/npm/dt/your-package-name.svg)](https://www.npmjs.com/package/mpesa-node)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Prerequisites
-1. Node.js v20+ 
-   2. Ensure you have Node.js version 20 or later installed for improved performance, security, and compatibility.
 
+* **Node.js v20+** – Ensure you have Node.js version 20 or later installed for improved performance, security, and
+  compatibility.
+* **Ngrok CLI** – Install the [**Ngrok CLI**](https://download.ngrok.com/) to expose your local server for testing M-Pesa
+  callbacks. Ensure you have followed the official guide on how to setup Ngrok
 
 ## Installation
-Use npm/yarn:
+
+Based on the **package manager** you prefer, run the commands below, to install all necessary dependencies
+
+**npm**: `npm install`
+
+**Yarn**: `yarn install`
+
+## Pre-Usage
+
+**Please make sure you have read the documentation on [Daraja](https://developer.safaricom.co.ke/home) before
+continuing.**
+
+You need to sign up for a Safaricom developer [**account**](https://developer.safaricom.co.ke/home) to obtain your **Consumer Key** and **Consumer Secret**. In addition, you'll need to download the **sandbox encryption certificate** to
+test the APIs in your project. For production or **going live** you'll be issued with a **production encryption
+certificate**
+
+For convenience, the sandbox certificate required for testing the library is already provided in the `libs/cert`
+directory _**(For testing the library itself)**_. In your own project, I recommend one to specify the certificate path
+in the `.env` for either **production** or **sandbox - development mode**.
+
+For example, your .env file might look like this:
+
+```dotenv
+# For sandbox/development
+MPESA_CERT_PATH_DEV=./path/to/your/sandbox-cert.pem
+# For production
+MPESA_CERT_PATH_PROD=./path/to/your/production-cert.pem
 ```
-npm i mpesa-node
-```
-
-### Pre-Usage
-
-**Please make sure you have read the documentation on [Daraja](https://developer.safaricom.co.ke/home) before continuing.**
-
-You need the following before getting to use this library:
-1. Consumer Key and Consume Secret
-2. Test Credentials *(Optional only for sandbox)*
 
 ## Getting Started
-This library is extremely modular, meaning you can create more than one Mpesa instance
-````js
-const Mpesa = require('mpesa-node')
-const mpesaApi = new Mpesa({ consumerKey: '<your consumer key>', consumerSecret: '<your consumer secret>' })
-// another instance
-// const instance = new Mpesa({ consumerKey: 'test', consumerSecret: 'test', environment: 'production' })
-mpesaApi
-    .c2bSimulate(
-        254708374149,
-        500,
-        'h6dk0Ue2'
-    )
-    .then((result) => {
-        //do something
-    })
-    .catch((err) => {
-        // retry?
-    })
-````
 
-While working with the Mpesa Class, you only need two key-value items, ie: consumerKey and consumerSecret.
-Nonetheless, prefilling some things means you dont have to re-enter them again. A complete config object looks like this
-````js
-new Mpesa({
-    consumerKey: '<your consumer key>',
-    consumerSecret: '<your consumer secret>',
-    environment: 'sandbox',
-    shortCode: '600111',
-    initiatorName: 'Test Initiator',
-    lipaNaMpesaShortCode: 123456,
-    lipaNaMpesaShortPass: '<some key here>',
-    securityCredential: '<credential here>',
-    certPath: path.resolve('keys/myKey.cert')
-})
-````
-## API
-Please note that this library is in active development, use in production with caution.
+**Note:** This library follows a **modular approach**, allowing you to import only the **specific functions or endpoints** you need. Before getting started, make sure the following steps are **properly set up** ✔.
 
-Current API:
-````js
-const mpesaApi = new Mpesa({ consumerKey: '<your consumer key>', consumerSecret: '<your consumer secret>' })
-const {
-  accountBalance,
-  b2b,
-  b2c,
-  c2bRegister,
-  c2bSimulate,
-  lipaNaMpesaOnline,
-  lipaNaMpesaQuery,
-  reversal,
-  transactionStatus
-} = mpesaApi
-````
-Ofcourse you dont need to import all methods, you can import the only ones you need.
+### Setting up environmental credentials
 
-All methods return a `<Promise>`, hence you can use `.then` or `await`.
-All calls are done by Axios, so for the response structure check Axios documentation.
+A `.env` file in your project's root directory is required to configure the **M-Pesa API** credentials. This file **should**
+contain the following environment variables
 
-### Methods
-• [B2C Request](https://developer.safaricom.co.ke/b2c/apis/post/paymentrequest)
+```dotenv
+MPESA_CONSUMER_KEY=your_consumer_key
+MPESA_CONSUMER_SECRET=your_consumer_secret
+MPESA_SECURITY_CREDENTIAL=your_encrypted_credential
+MPESA_PASS_KEY=your_pass_key
+MPESA_CERT_PATH_DEV=./certs/dev-cert.pem
+MPESA_CERT_PATH_PROD=./certs/prod-cert.pem
+ENVIRONMENT=sandbox
+```
 
-This initiates a business to customer transactions from a company (shortcode) to end users (mobile numbers) of their services.
-````js
-/*
- * b2c(senderParty, receiverParty, amount, queueUrl, resultUrl, commandId = 'BusinessPayment', initiatorName = null, remarks = 'B2C Payment', occasion = null)
- * Example:
-*/
-const { shortCode } = mpesaApi.configs
-const testMSISDN = 254708374149
-await mpesaApi.b2c(shortCode, testMSISDN, 100, URL + '/b2c/timeout', URL + '/b2c/success')
-````
+The `MPESA_PASS_KEY` Can be found specifically here [**Daraja**](https://developer.safaricom.co.ke/APIs/MpesaExpressSimulate) - _(my Apis - MpesaExpressSimulate)_. Click on the **console**, select an app, scroll down you'll see the field labeled `passKey`
 
-• [B2B Request](https://developer.safaricom.co.ke/b2b/apis/post/paymentrequest)
+**Note for Library Developers**: If you're contributing to or working on the **M-Pesa** library itself, place a
+`.env.local` or `.env` file in the `lib/tests` directory to run the included tests. This is not required for simply using the APIs
+in your own projects.
 
-This initiates a business to business transaction between one company to another.
-````js
-/*
- * b2c(senderParty, receiverParty, amount, queueUrl, resultUrl, senderType = 4, receiverType = 4, initiator = null, commandId = 'BusinessToBusinessTransfer', accountRef = null, remarks = 'B2B Request')
- * Example:
-*/
-const { shortCode } = mpesaApi.configs
-const testShortcode2 = 600000
-await mpesaApi.b2b(shortCode, testShortcode2, 100, URL + '/b2b/timeout', URL + '/b2b/success')
-````
-• [C2B Register](https://developer.safaricom.co.ke/c2b/apis/post/registerurl)
+## Simulating an account balance check:
 
-This initiates a C2B confirmation and validation registration for a company's URLs
+You can simulate an account balance check by importing and calling the `balanceQuery` function, together with its
+callback handler (optional) `handleBalanceQueryCallbacks`
 
-````js
-/*
- * c2bRegister(confirmationUrl, validationUrl, shortCode = null, responseType = 'Completed')
- * Example:
+**TypeScript Support:** This library has a `.d.ts` for each **API endpoint**, providing seamless integration and type
+checking for TypeScript projects.
+
+Below is an example of how to setup the account balance api endpoint `balanceQuery`:
+
+```js
+import { mpesa } from "mpesa-node";
+
+// Account Balance Query Example
+/**
+ * @name balanceQuery
+ * @description Fetches the account balance from M-Pesa.
+ * @see {@link https://developer.safaricom.co.ke/APIs/AccountBalance} - Daraja API Documentation
  */
 
-await mpesaApi.c2bRegister(URL + '/c2b/validation', URL + '/c2b/success')
+const { balanceQuery } = mpesa;
 
-````
+// Ensure you replace these placeholders with valid values
+// For the url, check on how to handle callbacks, paste the url provided below 
+const VALID_HTTPS_URL = "paste here"; 
+const INITIATOR_NAME = "yourInitiatorUsername";
 
-• [C2B Simulate](https://developer.safaricom.co.ke/c2b/apis/post/simulate)
+async function checkAccountBalance() {
+  try {
+    const response = await balanceQuery({
+      idType: 2, // Example: 2 (Till Number)
+      shortCode: 600977,
+      initiator: INITIATOR_NAME,
+      queueUrl: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
+      resultUrl: `${VALID_HTTPS_URL}/accountbalance/result`,
+    });
+    //do something ...
+    console.log("Account Balance Response:", JSON.stringify(response, null, 2));
+  } catch (error) {
+    //do something...
+    console.error("Error fetching account balance:", error);
+  }
+}
+// Execute the function
+checkAccountBalance();
+```
 
-This initiates a C2B transaction between an end-user and a company (paybill or till number)
+### Handling callbacks
 
-````js
-/*
- * c2bSimulate(msisdn, amount, billRefNumber, commandId = 'CustomerPayBillOnline', shortCode = null)
- * Example:
+After setting up the `balanceQuery` endpoint, lets configure the callback handler associated with it; `handleBalanceQueryCallbacks`. A **server instance** is required to use callback handlers
+. For this to work, ensure you have **ngrok CLI**
+installed on your machine, see [**getting started with Ngrok**](https://ngrok.com/docs/getting-started/)
+
+Using the library's default callback handlers is **completely optional**—you're free to handle them `manually` if
+preferred.
+
+```js
+import express from "express";
+import { callbacks } from "mpesa-node";
+
+const app = express();
+const { handleBalanceQueryCallbacks } = callbacks;
+
+// Middleware for parsing JSON requests
+app.use(express.json());
+
+// Register M-Pesa balance query callback handler
+handleBalanceQueryCallbacks(app);
+
+/**
+ * STARTING THE SERVER
+ * -------------------
+ * - The server listens on port 3000 (or an environment-defined port)
+ * - Developers can use tools like `ngrok` to expose the server publicly for testing callbacks
  */
-const testMSISDN = 254708374149
-await mPesa.c2bSimulate(testMSISDN, 100, Math.random().toString(35).substr(2, 7))
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`To expose this locally, run: ngrok http ${PORT}`);
+  console.log(`Ensure the public URL provided by ngrok is set as the 'resultUrl' and 'queueUrl' in your M-Pesa request`);
+});
+```
 
-````
-• [M-Pesa Express Request - Lipa Na M-Pesa Online Payment API](https://developer.safaricom.co.ke/lipa-na-m-pesa-online/apis/post/stkpush/v1/processrequest)
+When using the default **callback handlers**, the response includes the main API `balanceQuery` response body, along with either a **result** or **queue** callback body.
 
-This initiates a Lipa Na M-Pesa Online Payment transaction using STK Push.
+```js
+ const response = await balanceQuery({
+      idType: 2, // Example: 2 (Till Number)
+      shortCode: 600977,
+      initiator: INITIATOR_NAME,
+      queueUrl: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
+      resultUrl: `${VALID_HTTPS_URL}/accountbalance/result`,
+    });
+    //do something ...
+    console.log("Account Balance Response:", JSON.stringify(response, null, 2));
+    /*
+        if callback handlers are used expect such a json response...
+        "Account balance response": {
+          "balanceResponse": {
+            ...some data
+          },
+        "conditionalCallbackData": {
+            "type": "result or queue",
+                "data": {
+                  ...some data
+                }
+            }
+        }
+        if callback handlers aren't used simply expect
+        "Account balance response": {
+          "balanceResponse": {
+            ...some data
+          },
+          "conditionalCallbackData": {}
+    */
+```
 
-````js
-/*
- * lipaNaMpesaOnline(senderMsisdn, amount, callbackUrl, accountRef, transactionDesc = 'Lipa na mpesa online', transactionType = 'CustomerPayBillOnline', shortCode = null, passKey = null)
- * Example:
- */
- const testMSISDN = 254708374149
- const amount = 100
- const accountRef = Math.random().toString(35).substr(2, 7)
-await mpesaApi.lipaNaMpesaOnline(testMSISDN, amount, URL + '/lipanampesa/success', accountRef)
+**NOTE**: At all costs avoid using URLs offered by **Ngrok** for **production** or **going live**
 
-````
-• [M-Pesa Express Query Request - Lipa Na M-Pesa Query Request API](https://developer.safaricom.co.ke/lipa-na-m-pesa-online/apis/post/stkpushquery/v1/query)
 
-This API checks the status of a Lipa Na M-Pesa Online Payment transaction
+## Supported API endpoints:
 
-````js
-/*
- * lipaNaMpesaQuery(checkoutRequestId, shortCode = null, passKey = null)
- * Example:
- */
-const checkoutRequestId ='ws_co_123456789'
-await mpesaApi.lipaNaMpesaQuery(checkoutRequestId)
-````
-• [Reversal Request](https://developer.safaricom.co.ke/reversal/apis/post/request)
+#### Caution!
 
-This initiates an M-Pesa transaction reversal on B2B, B2C or C2B API
-````js
-/*
- * reversal(transactionId, amount, queueUrl, resultUrl, shortCode = null, remarks = 'Reversal', occasion = 'Reversal', initiator = null, receiverIdType = '11', commandId = 'TransactionReversal')
- * Example:
- */
-await mpesaApi.reversal('LKXXXX1234', 100, URL + '/reversal/timeout', URL + '/reversal/success')
-````
-• [Transaction Status Request](https://developer.safaricom.co.ke/transaction-status/apis/post/query)
+This library is still in development. We recommend **thorough testing** before using it in a **production environment**.
 
-This API is used to check the status of B2B, B2C and C2B transactions
+Here is a comprehensive list of all supported API endpoints with their respective documentation links:
 
-````js
-/*
- * transactionStatus(transactionId, receiverParty, idType, queueUrl, resultUrl, remarks = 'TransactionReversal', occasion = 'TransactionReversal', initiator = null, commandId = 'TransactionStatusQuery')
- * Example:
- */
-await mpesaApi.transactionStatus('LKXXXX1234', shortCode, 4, URL + '/transactionstatus/timeout', URL + '/transactionstatus/success')
-````
-• [Account Balance Request](https://developer.safaricom.co.ke/account-balance/apis/post/query)
+- **balanceQuery**: [**Daraja**](https://developer.safaricom.co.ke/APIs/AccountBalance)
+  or [**JsDocs**](./docs/balance-Query.js.html)
+- **b2cRequest**: [**Daraja**](https://developer.safaricom.co.ke/APIs/BusinessToCustomer)
+  or [**JsDocs**](./docs/b2c-Request.js.html)
+- **c2bRegister**: [**Daraja**](https://developer.safaricom.co.ke/APIs/CustomerToBusinessRegisterURL)
+  or [**JsDocs**](./docs/c2b-Register.js.html)
+- **c2bSimulate**: [**Daraja**](https://developer.safaricom.co.ke/c2b/apis/post/simulate)
+  or [**JsDocs**](./docs/c2b-Simulate.js.html)
+- **mpesaSimulate**: [**Daraja**](https://developer.safaricom.co.ke/c2b/apis/post/simulate)
+  or [**JsDocs**](./docs/c2b-Simulate.js.html)
+- **mpesaQuery**: [**Daraja**](https://developer.safaricom.co.ke/c2b/apis/post/simulate)
+  or [**JsDocs**](./docs/c2b-Simulate.js.html)
+- **reversals**: [**Daraja**](https://developer.safaricom.co.ke/APIs/MpesaExpressQuery)
+  or [**JsDocs**](./docs/reversals.js.html)
+- **generateQrCode**: [**Daraja**](https://developer.safaricom.co.ke/APIs/DynamicQRCode)
+  or [**JsDocs**](./docs/qr-Generate.js.html)
+- **transactionStatus**: [**Daraja**](https://developer.safaricom.co.ke/transaction-status/apis/post/query)
+  or [**JsDocs**](./docs/transaction-Status.js.html)
+- **b2cTopUp**: [**Daraja**](https://developer.safaricom.co.ke/transaction-status/apis/post/query)
+  or [**JsDocs**](./docs/b2c-Topup.js.html)
+- **businessPaybill**: [**Daraja**](https://developer.safaricom.co.ke/APIs/BusinessPayBill)
+  or [**JsDocs**](./docs/business-Paybill.js.html)
+- **taxRemittance**: [**Daraja**](https://developer.safaricom.co.ke/APIs/TaxRemittance)
+  or [**JsDocs**](https://developer.safaricom.co.ke/APIs/TaxRemittance)
 
-This initiates a request for the account balance of a shortcode
+Developers are strongly encouraged to consult the [**JsDocs**](./docs/global.html) (_which comes bundled with the library_) for detailed information on how the required fields are mapped. This documentation clearly outlines the necessary configurations for successfully initiating any endpoint, ensuring a smooth integration process.
 
-````js
-/*
- * accountBalance(shortCode, idType, queueUrl, resultUrl, remarks = 'Checking account balance', initiator = null, commandId = 'AccountBalance')
- * Example:
- */
-const { shortCode } = mpesaApi.configs
-await mpesaApi.accountBalance(shortCode, 4, URL + '/accountbalance/timeout', URL + '/accountbalance/success')
-````
+### Options for each API
+Here is a comprehensive list of all supported APIs along with their respective **options**. Use this as a reference when configuring the parameters for your chosen API.
+```ts
+export interface balanceQueryOptions {
+  partyA: number;
+  identifierType: number;
+  QueueTimeOutUrl: string;
+  resultUrl: string;
+  initiator: string;
+  remarks: string;
+}
+
+export interface b2cRequestOptions {
+  partyA: number;
+  partyB: string;
+  amount: number;
+  QueueTimeOutUrl: string;
+  resultUrl: string;
+  commandId: string;
+  initiatorName: string;
+  remarks: string;
+  occasion: string;
+}
+
+export interface c2bRegisterOptions {
+  confirmationUrl: string;
+  validationUrl: string;
+  shortCode: number;
+  responseType: string;
+}
+
+export interface c2bSimulateOptions {
+  msisdn: string;
+  amount: number;
+  billRefNumber: string;
+  shortCode: number;
+}
+
+export interface mpesaSimulateOptions {
+  partyA: string;
+  phoneNumber: string;
+  amount: number;
+  callbackUrl: string;
+  accountRef: string;
+  transactionType: string;
+  partyB: number;
+  transactionDesc: string;
+}
+
+export interface mpesaQueryOptions {
+  checkoutRequestId: string;
+  businessShortCode: number;
+}
+
+export interface reversalsOptions {
+  transactionId: string;
+  amount: number;
+  QueueTimeOutUrl: string;
+  resultUrl: string;
+  receiverParty: string;
+  initiator: string;
+  receiverIdType: string;
+  remarks: string;
+  occasion: string;
+}
+
+export interface transactionStatusOptions {
+  transactionId: string;
+  partyA: number;
+  identifierType: number;
+  QueueTimeOutUrl: string;
+  resultUrl: string;
+  initiator: string;
+  OriginatorConversationID: string;
+  remarks: string;
+  occasion: string;
+}
+
+export interface generateQrCodeOptions {
+  merchantName: string;
+  refNo: string;
+  amount: number;
+  trxCode: "BG" | "WA" | "PB" | "SM" | "SB";
+  cpi: string;
+  size: string;
+}
+
+export interface b2cTopUpOptions {
+  initiator: string;
+  amount: number;
+  partyA: number;
+  partyB: number;
+  accountReference: number;
+  requester?: number;
+  QueueTimeOutURL: string;
+  resultURL: string;
+  remarks: string;
+}
+
+export interface businessPaybillOptions {
+  initiator: string;
+  amount: number;
+  partyA: number;
+  partyB: number;
+  accountReference: number;
+  requester?: number;
+  QueueTimeOutURL: string;
+  resultURL: string;
+  remarks: string;
+}
+
+export interface taxRemittanceOptions {
+  initiator: string;
+  amount: number;
+  partyA: number;
+  partyB: number;
+  accountReference: number;
+  QueueTimeOutURL: string;
+  resultURL: string;
+  remarks: string;
+}
+```
+### MSISDN formatting
+When working with APIs that require an `msisdn` (a **phone number**), always provide it as a `string` in the format: `0708374149`. The library automatically processes the number into the required format, so no additional configuration is needed.
+
+### External configurations
+Certain endpoints require external configurations to function correctly, particularly when working in a production environment. For seamless integration and optimal performance, it is crucial to review the API documentation thoroughly. Some APIs, such as **taxRemittance**, **b2cRequest** and **c2bRegister**, may depend on additional setup or external parameters that are necessary for proper functionality.
+
+In a **production development** setting, these configurations are especially critical to ensure that all aspects of the API perform as expected. It is highly recommended that developers pay close attention to the specific requirements outlined in the [**official documentation**](https://developer.safaricom.co.ke/APIs) for each API. Relying on the most up-to-date and detailed guidelines from the official sources will help mitigate potential issues and ensure smooth integration.
+
 ## Testing
-Testing needs you to clone this repo.
 
-The command below runs both integration and unit test.
+This library is built around **integration tests**, following a **Behavior-Driven Development (BDD)** approach.
 
-Integration tests launch a ngrok instance and await callbacks (you will need an active internet connection for this).
+This approach is ideal for a wide range of audiences because **BDD focuses** on clear, human-readable test scenarios
+that describe expected behaviors. Additionally, integration tests validate real-world interactions, ensuring the library
+works reliably in actual usage scenarios.
 
-To run each separately, check `package.json` for the commands.
-````
-npm test
-````
-## Going Live/Production
+**BDD approach** + **on integration tests**, can help:
 
-You will need to first click on "Going Live" on [Daraja](https://developer.safaricom.co.ke/user/me/apps)
+* Catch authentication issues (**OAuth failures**)
+* Verify actual API responses (**instead of mocked ones**)
+* Check if callbacks are received & handled properly
+* Detect network timeouts or incorrect response formats
 
-The only thing you need to tweek in this Libs config is `environment`:
-````js
-new Mpesa({
-    consumerKey: '<your consumer key>',
-    consumerSecret: '<your consumer secret>',
-    environment: 'production', //<------
-    .....
-    })
-````
+To run tests, first, **clone this repository**.
+
+The command below (_based on your package manager_) executes **integration tests**, which **require an active internet
+connection** to accurately simulate **real API interactions** over **HTTPS**.
+
+**npm**: `npm test`
+
+**Yarn**: `yarn test`
+
+### Activating callback handlers in tests
+
+Callback handlers in **testing** are automatically configured but **disabled** by default. 
+
+Below is an example of a `c2bSimulate` **mocha** test. To activate callback handling swap `true` to `false`.
+
+```js
+import { expect } from "chai";
+import { mpesa } from "../../../../index.js";
+import { setupNgrokServer } from "../utils/server.js";
+import { createOptionsForC2bSimulate } from "../utils/options.js";
+
+describe("C2B Simulate API with OAuth", function() {
+  this.timeout(28000);
+  let NGROK_URL, teardown;
+  const { c2bSimulate } = mpesa;
+
+  // To enable callback handling swap true to false
+  before(async function() {
+    // ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", true)); 
+    ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", false)); 
+  });
+
+  after(async function() {
+    await teardown();
+  });
+
+  it("Should simulate a C2B transaction", function(done) {
+    c2bSimulate(createOptionsForC2bSimulate(NGROK_URL === "" ? "https://mock.url" : NGROK_URL))
+      .then((responseBody) => {
+        expect(responseBody).to.be.an("object");
+        console.log("RESPONSE BODY:", JSON.stringify(responseBody, null, 2));
+        done();
+      })
+      .catch(done);
+  });
+});
+
+```
+
+### Temporary port exposure
+
+Once the callback handler is enabled, the boolean option (`false` allows the test to temporarily:
+
+* Spawn a local server
+* Expose it via Ngrok
+* Fetch responses from API endpoint servers
+
+This setup ensures that callbacks are properly handled during testing.
+
+## Production environment (Going live)
+
+Before **deploying** to **production**, successful **sandbox testing** is essential. We **expect** the library to behave
+**consistently** in both environments, with the key difference being that production callbacks will contain real
+transaction data, whereas sandbox callbacks return simulated responses.
+
+To **go live**, log in to [**Daraja**](https://developer.safaricom.co.ke/) and click on
+the "[**Going Live**](https://developer.safaricom.co.ke/GoLive)" option.
+
+For this to work properly, you need to tweak the `ENVIRONMENT` option to `"production"` and `MPESA_CERT_PATH_PROD` to a
+valid `"/production.cer"` path, in the `.env` file:
+
+```dotenv
+ENVIRONMENT=production
+MPESA_CERT_PATH_PROD=./path/to/your/production-cert.pem
+```
 
 ## Pending Stuff
 
-- [x] E2E Integration Tests
-- [x] Deploy to Npm
-- [x] Reduce number of args
-- [x] Detailed Documentation
-- [ ] Enumify
-- [ ] Validators for MSISDN and other expected inputs
-- [x] More detailed Unit tests
-- [ ] Handle all Promises
+- [x] **Integration Tests**
+- [x] **Deploy to Npm**
+- [x] **Detailed Documentation**
+- [x] **Typescript Definitions**
+- [x] **Validators for MSISDN and URLs**
+- [ ] **Production testing**
 
 ## Contributing
-1. Create your feature branch: `git checkout -b my-new-feature`
-2. Commit your changes: `git commit -m 'Add some feature'`
-3. Push to the branch: `git push origin my-new-feature`
-4. Submit a pull request :D
+
+We welcome **contributions**! Follow these steps to get started:
+
+1. **Create** your feature branch: `git checkout -b my-new-feature`
+2. **Commit** your changes: `git commit -m 'Add some feature'`
+3. **Push** to the branch: `git push origin my-new-feature`
+4. Open a **pull request** and share your updates
 
 ## Credits
 
-| **Contributor** |
-<br/>
-| [DGatere](https://github.com/DGatere) |<br/>
-| [geofmureithi](https://github.com/geofmureithi) |
+**Contributors**
 
+* [DGatere](https://github.com/DGatere)
+* [geofmureithi](https://github.com/geofmureithi)
+* [Waturu Samm](https://github.com/tu-ru/)
 
 ## License
 

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>c2b-Simulate.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">c2b-Simulate.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  generateOAuthToken, logErrorDetails,
+  throwErrorMessages,
+  validateFormatPhone
+} from "../utils/helpers.js";
+import axios from "axios";
+
+
+/**
+ * @name c2bSimulate
+ * @description This function simulates a C2B (Customer to Business) transaction by initiating a payment from an MSISDN to a business shortcode.
+ * @summary Simulate a transaction from an MSISDN to a business shortcode
+ * @see {@link https://developer.safaricom.co.ke/APIs/CustomerToBusinessRegisterURL open external link}
+ * @param {Object} options Options for the C2B simulation.
+ * @param {string} options.msisdn The MSISDN receiving the transaction
+ * @param {number} options.amount Transaction amount.
+ * @param {string} options.billRefNumber Bill reference number e.g. "invoice008".
+ * @param {number} options.shortCode Usually, a unique number is tagged to an M-PESA pay bill/till number of the organization
+ * @param {boolean} [options.proErrorLogging] Logs out advanced error details - good for debugging
+ * @return {Promise&lt;Object>} c2bSimulateResponse.
+ */
+async function c2bSimulate({
+  msisdn,
+  amount,
+  billRefNumber,
+  shortCode,
+  proErrorLogging = false,
+}) {
+  /** SIMULATE SHOULD ONLY BE PERFORMED IN SANDBOX MODE, NEVER IN PRODUCTION **/
+  const { accessToken, baseURL } = await generateOAuthToken();
+  if (baseURL === "https://api.safaricom.co.ke") {
+    throw new Error(
+      "Simulation is allowed only in development or sandbox environment!",
+    );
+  }
+  try {
+    const req = axios.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const config = {
+      commandId: "CustomerPayBillOnline",
+    };
+    const responseBody = await req.post(`/mpesa/c2b/v1/simulate`, {
+      ShortCode: shortCode,
+      CommandID: config.commandId,
+      Amount: amount,
+      Msisdn: validateFormatPhone(msisdn),
+      BillRefNumber: billRefNumber,
+    });
+    return { c2bSimulateResponse: responseBody.data };
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for c2bSimulate has been initialized",
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/c2b/v1/simulate",
+          method: "POST",
+          payload: {
+            msisdn,
+            amount,
+            billRefNumber,
+            shortCode,
+          },
+        },
+        "C2B Simulation transaction error details:",
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+export { c2bSimulate };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

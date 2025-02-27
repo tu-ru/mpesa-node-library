@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>business-Paybill.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">business-Paybill.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import {
+  callbackTrigger,
+  encryptSecurityCredential,
+  generateOAuthToken,
+  handleCallbacks,
+  logErrorDetails,
+  throwErrorMessages,
+  validateUrl,
+} from "../utils/helpers.js";
+
+// Globals
+let callbackHandlerInitialized = false;
+let conditionalCallbackData = {};
+
+/**
+ * @name businessPaybill
+ * @description This API enables you to pay bills directly from your business account to a pay bill number, or a paybill store. You can use this API to pay on behalf of a consumer/requester. The transaction moves money from your MMF/Working account to the recipient’s utility account.
+ * @summary  Facilitates bill payments from a business account to a paybill number, transferring funds to the recipient’s utility account.
+ * @see {@link https://developer.safaricom.co.ke/APIs/BusinessPayBill open external link}
+ * @param {Object} options Options for the business pay bill.
+ * @param {string} options.initiator M-Pesa API operator username with Org Business Pay Bill API role.
+ * @param {number} options.amount Transaction amount.
+ * @param {number} options.partyA Shortcode from which money will be deducted.
+ * @param {number} options.partyB Shortcode to which money will be moved.
+ * @param {string} options.remarks Information to be associated with the transaction.
+ * @param {number} options.accountReference Account number for the payment (up to 13 characters).
+ * @param {number} [options.requester] Optional consumer’s mobile number (if paying on their behalf).
+ * @param {string} options.QueueTimeOutURL URL for timeout notifications.
+ * @param {string} options.resultUrl URL for sending transaction results after processing.
+ * @param {boolean} [options.proErrorLogging] Logs out advanced error details - good for debugging
+ * @return {Promise&lt;Object>} businessPaybillResponse and (optional) conditionalCallbackData.
+ */
+async function businessPaybill({
+  initiator,
+  amount,
+  partyA,
+  partyB,
+  remarks,
+  accountReference,
+  requester,
+  QueueTimeOutURL,
+  resultUrl,
+  proErrorLogging = false,
+}) {
+  if (!callbackHandlerInitialized) {
+    console.info(
+      "\x1b[42m\x1b[30m\x1b[1m The default callback handler ('handleBusinessPaybillCallbacks') was not called. Ignore if handling manually.\x1b[0m",
+    );
+  }
+  try {
+    validateUrl(resultUrl, "resultUrl");
+    validateUrl(QueueTimeOutURL, "timeoutUrl");
+    const { accessToken, baseURL } = await generateOAuthToken();
+    const req = axios.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    // Default configurations
+    const config = {
+      commandId: "BusinessPayBill",
+      senderIdentifierType: "4",
+      receiverIdentifierType: "4",
+    };
+    const responseBody = await req.post("/mpesa/b2b/v1/paymentrequest", {
+      Initiator: initiator,
+      SecurityCredential: encryptSecurityCredential(),
+      CommandID: config.commandId,
+      SenderIdentifierType: config.senderIdentifierType,
+      RecieverIdentifierType: config.receiverIdentifierType,
+      Amount: amount,
+      PartyA: partyA,
+      PartyB: partyB,
+      AccountReference: accountReference,
+      Requester: requester,
+      Remarks: remarks,
+      QueueTimeOutURL: QueueTimeOutURL,
+      ResultURL: resultUrl,
+    });
+
+    conditionalCallbackData = await callbackTrigger(callbackHandlerInitialized);
+
+    return {
+      businessPaybillResponse: responseBody.data,
+      conditionalCallbackData,
+    };
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for businessPaybill has been initialized",
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/b2b/v1/paymentrequest",
+          method: "POST",
+          payload: {
+            initiator,
+            amount,
+            partyA,
+            partyB,
+            accountReference,
+            requester,
+            QueueTimeOutURL,
+            resultUrl,
+            remarks
+          },
+        },
+        "Business Pay Bill transaction error details:",
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+
+const handleBusinessPaybillCallbacks = async (app) => {
+  callbackHandlerInitialized = true;
+  await handleCallbacks(app, "businessPaybill");
+};
+
+export { businessPaybill, handleBusinessPaybillCallbacks };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

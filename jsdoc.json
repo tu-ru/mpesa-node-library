@@ -1,0 +1,27 @@
+{
+  "source": {
+    "include": ["lib/core/apis", "lib/core/JSDOC.md"],
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc"]
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "opts": {
+  "destination": "./docs/",
+  "encoding": "utf8",
+  "private": true,
+  "recurse": true,
+  "template": "./node_modules/minami"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": true,
+    "useLongnameInNav": false,
+    "showInheritedInNav": true
+  }
+}

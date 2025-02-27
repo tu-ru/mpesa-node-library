@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>mpesa-Simulate.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">mpesa-Simulate.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import {
+  callbackTrigger,
+  generateMpesaCredentials,
+  generateOAuthToken,
+  handleCallbacks,
+  logErrorDetails,
+  throwErrorMessages,
+  validateFormatPhone,
+  validateUrl
+} from "../utils/helpers.js";
+
+// Globals
+let callbackHandlerInitialized = false;
+let conditionalCallbackData = {};
+
+/**
+ * @name mpesaSimulate
+ * @description Lipa na M-PESA online API also known as M-PESA express (STK Push/NI push) is a Merchant/Business initiated C2B (Customer to Business) Payment. it enables you to send a payment prompt on the customer's phone (Popularly known as STK Push Prompt) to your customer's M-PESA registered phone number requesting them to enter their M-PESA pin to authorize and complete payment.
+ * @summary Sends a payment prompt to the customer's M-PESA registered phone number, requesting them to enter their M-PESA pin to authorize and complete payment.
+ * @see {@link https://developer.safaricom.co.ke/APIs/MpesaExpressSimulate open external link}
+ * @param {Object} options Options for M-Pesa express API.
+ * @param {string} options.partyA Sender's Safaricom mobile number (M-PESA registered).
+ * @param {string} options.phoneNumber Mobile number to receive the STK Pin Prompt (can be same as partyA).
+ * @param {number} options.amount Transaction amount.
+ * @param {string} options.transactionType "CustomerPayBillOnline" for PayBill and "CustomerBuyGoodsOnline" for Till Numbers.
+ * @param {string} options.callbackUrl Secure URL for receiving notifications from M-Pesa API.
+ * @param {string} options.transactionDesc Information to be associated with the transaction.
+ * @param {string} options.accountRef Alphanumeric account reference (up to 12 characters) shown in the STK Pin Prompt (Org name).
+ * @param {number} options.partyB 5 to 6-digit number of the receiving organization.
+ * @param {boolean} [options.proErrorLogging] Logs out advanced error details - good for debugging
+ * @returns {Promise&lt;Object>} mpesaSimulateResponse and (optional) conditionalCallbackData.
+ */
+async function mpesaSimulate({
+                               partyA,
+                               phoneNumber,
+                               amount,
+                               callbackUrl,
+                               accountRef,
+                               partyB,
+                               transactionType,
+  transactionDesc,
+                               proErrorLogging = false
+                             }) {
+  if (!callbackHandlerInitialized) {
+    console.info(
+      "\x1b[42m\x1b[30m\x1b[1m The default callback handler ('handleMpesaSimulateCallbacks') was not called. Ignore if handling manually.\x1b[0m"
+    );
+  }
+  try {
+    validateUrl(callbackUrl, "callbackUrl");
+    const { accessToken, baseURL } = await generateOAuthToken();
+    const { password, timeStamp } = generateMpesaCredentials(partyB);
+    const req = axios.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      }
+
+    });
+    const responseBody = await req.post("/mpesa/stkpush/v1/processrequest", {
+      BusinessShortCode: partyB,
+      Password: password,
+      Timestamp: timeStamp,
+      Amount: amount,
+      PartyA: validateFormatPhone(partyA),
+      PartyB: partyB,
+      PhoneNumber: validateFormatPhone(phoneNumber),
+      CallBackURL: callbackUrl,
+      AccountReference: accountRef,
+      TransactionDesc: transactionDesc,
+      TransactionType: transactionType
+    });
+    conditionalCallbackData = await callbackTrigger(callbackHandlerInitialized, true);
+    return {
+      mpesaSimulateResponse: responseBody.data,
+      conditionalCallbackData
+    };
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for mpesaSimulate has been initialized"
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/stkpush/v1/processrequest",
+          method: "POST",
+          payload: {
+            partyA,
+            phoneNumber,
+            amount,
+            callbackUrl,
+            accountRef,
+            partyB,
+            transactionDesc
+          }
+        },
+        "Mpesa Simulate transaction error details:"
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+
+const handleMpesaSimulateCallbacks = async (app) => {
+  callbackHandlerInitialized = true;
+  await handleCallbacks(app, "mpesaSimulate");
+};
+export { mpesaSimulate, handleMpesaSimulateCallbacks };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

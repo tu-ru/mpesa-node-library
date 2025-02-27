@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>mpesa-Query.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#C2BRegister">C2BRegister</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cRequest">b2cRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#b2cTopUp">b2cTopUp</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#balanceQuery">balanceQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#businessPaybill">businessPaybill</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#c2bSimulate">c2bSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#generateQrCode">generateQrCode</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaQuery">mpesaQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#mpesaSimulate">mpesaSimulate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#reversals">reversals</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#taxRemittance">taxRemittance</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#transactionStatus">transactionStatus</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">mpesa-Query.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  generateMpesaCredentials,
+  generateOAuthToken,
+  logErrorDetails,
+  throwErrorMessages,
+} from "../utils/helpers.js";
+import axios from "axios";
+
+/**
+ * @name mpesaQuery
+ * @description Use this API to check the status of a Lipa Na M-Pesa Online Payment.
+ * @summary Check transaction status of a Lipa na M-Pesa payment.
+ * @see {@link https://developer.safaricom.co.ke/APIs/MpesaExpressQuery open external link}
+ * @param {Object} options Options for the Lipa Na M-Pesa query API.
+ * @param {string} options.checkoutRequestId Unique identifier for the processed checkout transaction.
+ * @param {number} options.businessShortCode Organization's shortcode (Paybill or Buygoods, 5-7 digits).
+ * @param {boolean} [options.proErrorLogging] Logs out advanced error details - good for debugging
+ * @returns {Promise&lt;Object>} mpesaQueryResponse.
+ */
+async function mpesaQuery({
+  checkoutRequestId,
+  businessShortCode,
+  proErrorLogging = false,
+}) {
+  const { accessToken, baseURL } = await generateOAuthToken();
+  const { password, timeStamp } = generateMpesaCredentials(businessShortCode);
+  const req = axios.create({
+    baseURL,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  try {
+    const responseBody = await req.post("/mpesa/stkpushquery/v1/query", {
+      BusinessShortCode: businessShortCode,
+      Password: password,
+      Timestamp: timeStamp,
+      CheckoutRequestID: checkoutRequestId,
+    });
+
+    return { mpesaQueryResponse: responseBody.data };
+  } catch (error) {
+    if (proErrorLogging) {
+      console.info(
+        "\x1b[35m%s\x1b[0m",
+        "Advanced error logging for mpesaQuery has been initialized",
+      );
+      logErrorDetails(
+        error,
+        {
+          apiEndpoint: "/mpesa/stkpushquery/v1/query",
+          method: "POST",
+          payload: {
+            businessShortCode,
+            checkoutRequestId,
+          },
+        },
+        "Mpesa Query transaction error details:",
+      );
+    }
+    throw throwErrorMessages(error);
+  }
+}
+
+export { mpesaQuery };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Feb 27 2025 21:37:15 GMT+0300 (East Africa Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
