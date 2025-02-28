@@ -4,15 +4,15 @@
  * @param {number} options.partyA The shortcode of the querying organization.
  * @param {number} options.identifierType Type of the querying organization.
  * @param {String} options.QueueTimeOutURL URL to receive timeout messages.
- * @param {String} options.resultUrl URL to receive the result message.
+ * @param {String} options.resultURL URL to receive the result message.
  * @param {string} options.remarks Information to be associated with the transaction.
  * @param {String} options.initiator The credential/username for authentication.
  */
 export interface balanceQueryOptions {
   partyA: number;
   identifierType: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   initiator: string;
   remarks: string;
 }
@@ -26,7 +26,7 @@ export interface balanceQueryOptions {
  * @param {string} options.remarks Information to be associated with the transaction.
  * @param {string} options.occasion Information to be associated with the transaction.
  * @param {string} options.QueueTimeOutURL URL for timeout notifications.
- * @param {string} options.resultUrl URL for M-PESA to send payment processing notifications.
+ * @param {string} options.resultURL URL for M-PESA to send payment processing notifications.
  * @param {string} options.commandId Unique command specifying B2C transaction type (e.g., BusinessPayment).
  * @param {string} options.initiatorName API user created by Business Administrator for B2C transactions.
  */
@@ -34,8 +34,8 @@ export interface b2cRequestOptions {
   partyA: number;
   partyB: string;
   amount: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   commandId: string;
   initiatorName: string;
   remarks: string;
@@ -45,14 +45,14 @@ export interface b2cRequestOptions {
 /**
  * @name c2bRegisterOptions
  * @param {Object} options Options for the C2B Register URL.
- * @param {string} options.confirmationUrl URL to receive confirmation upon payment completion.
- * @param {string} options.validationUrl URL to receive validation upon payment submission (default: external validation disabled).
+ * @param {string} options.confirmationURL URL to receive confirmation upon payment completion.
+ * @param {string} options.validationURL URL to receive validation upon payment submission (default: external validation disabled).
  * @param {number} options.shortCode Unique M-PESA pay bill/till number.
  * @param {string} options.responseType Action if validation URL is unreachable (values: Completed or Cancelled).
  */
 export interface c2bRegisterOptions {
-  confirmationUrl: string;
-  validationUrl: string;
+  confirmationURL: string;
+  validationURL: string;
   shortCode: number;
   responseType: string;
 }
@@ -78,7 +78,7 @@ export interface c2bSimulateOptions {
  * @param {string} options.phoneNumber Mobile number to receive the STK Pin Prompt (can be same as partyA).
  * @param {number} options.amount Transaction amount.
  * @param {string} options.transactionType "CustomerPayBillOnline" for PayBill and "CustomerBuyGoodsOnline" for Till Numbers.
- * @param {string} options.callbackUrl Secure URL for receiving notifications from M-Pesa API.
+ * @param {string} options.callbackURL Secure URL for receiving notifications from M-Pesa API.
  * @param {string} options.transactionDesc Information to be associated with the transaction.
  * @param {string} options.accountRef Alphanumeric account reference (up to 12 characters) shown in the STK Pin Prompt.
  * @param {number} options.partyB 5 to 6-digit number of the receiving organization.
@@ -87,7 +87,7 @@ export interface mpesaSimulateOptions {
   partyA: string;
   phoneNumber: string;
   amount: number;
-  callbackUrl: string;
+  callbackURL: string;
   accountRef: string;
   transactionType: string;
   partyB: number;
@@ -113,15 +113,15 @@ export interface mpesaQueryOptions {
  * @param {string} options.QueueTimeOutURL URL for timeout transaction details.
  * @param {string} options.remarks Information to be associated with the transaction.
  * @param {string} options.occasion Information to be associated with the transaction.
- * @param {string} options.resultUrl URL for transaction details.
+ * @param {string} options.resultURL URL for transaction details.
  * @param {number} options.receiverParty Organization receiving the transaction.
  * @param {string} options.initiator Name of the initiator of the request.
  */
 export interface reversalsOptions {
   transactionId: string;
   amount: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   receiverParty: string;
   initiator: string;
   receiverIdType: string;
@@ -139,15 +139,15 @@ export interface reversalsOptions {
  * @param {string} options.occasion Information to be associated with the transaction.
  * @param {number} options.identifierType Type of organization receiving the transaction.
  * @param {string} options.OriginatorConversationID This is a globally unique identifier for the transaction request returned by the API proxy upon successful submission.
- * @param {string} options.QueueTimeOutUrl URL for timeout transaction details.
- * @param {string} options.resultUrl URL for transaction details.
+ * @param {string} options.QueueTimeOutURL URL for timeout transaction details.
+ * @param {string} options.resultURL URL for transaction details.
  */
 export interface transactionStatusOptions {
   transactionId: string;
   partyA: number;
   identifierType: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   initiator: string;
   OriginatorConversationID: string;
   remarks: string;
@@ -183,7 +183,7 @@ export interface generateQrCodeOptions {
  * @param {string} options.remarks Information to be associated with the transaction. * @param {number} options.accountReference Transaction identifier.
  * @param {number} [options.requester] Optional consumer’s mobile number (if paying on their behalf).
  * @param {string} options.QueueTimeOutURL URL for timeout notifications.
- * @param {string} options.resultUrl URL for sending transaction results after processing.
+ * @param {string} options.resultURL URL for sending transaction results after processing.
  */
 export interface b2cTopUpOptions {
   initiator: string;
@@ -207,8 +207,8 @@ export interface b2cTopUpOptions {
  * @param {number} options.partyB Shortcode to which money will be moved.
  * @param {number} options.accountReference Account number for the payment (up to 13 characters).
  * @param {number} [options.requester] Optional consumer’s mobile number (if paying on their behalf).
- * @param {string} options.QueueTimeoutUrl URL for timeout notifications.
- * @param {string} options.resultUrl URL for sending transaction results after processing.
+ * @param {string} options.QueueTimeOutURL URL for timeout notifications.
+ * @param {string} options.resultURL URL for sending transaction results after processing.
  */
 export interface businessPaybillOptions {
   initiator: string;
@@ -232,7 +232,7 @@ export interface businessPaybillOptions {
  * @param {number} options.partyB Account to which money will be credited.
  * @param {number} options.accountReference Payment registration number (PRN) from KRA.
  * @param {string} options.QueueTimeOutURL URL for timeout notifications before processing.
- * @param {string} options.resultUrl URL for sending transaction results after processing.
+ * @param {string} options.resultURL URL for sending transaction results after processing.
  */
 export interface taxRemittanceOptions {
   initiator: string;

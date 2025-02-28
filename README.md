@@ -11,7 +11,7 @@
 [![Made in Africa](https://img.shields.io/badge/Africa's%20Rising-%E2%9C%93-green.svg)](https://github.com/collections/made-in-africa)
 [![Known Vulnerabilities](https://snyk.io/test/github/safaricom/mpesa-node-library/badge.svg?targetFile=package.json)](https://snyk.io/test/github/safaricom/mpesa-node-library?targetFile=package.json)
 [![npm downloads](https://img.shields.io/npm/dt/your-package-name.svg)](https://www.npmjs.com/package/mpesa-node)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Prerequisites
 
@@ -83,7 +83,7 @@ callback handler (optional) `handleBalanceQueryCallbacks`
 **TypeScript Support:** This library has a `.d.ts` for each **API endpoint**, providing seamless integration and type
 checking for TypeScript projects.
 
-Below is an example of how to setup the account balance api endpoint `balanceQuery`:
+Below is an example of how to set up the account balance api endpoint `balanceQuery`:
 
 ```js
 import { mpesa } from "mpesa-node";
@@ -108,8 +108,8 @@ async function checkAccountBalance() {
       idType: 2, // Example: 2 (Till Number)
       shortCode: 600977,
       initiator: INITIATOR_NAME,
-      queueUrl: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
-      resultUrl: `${VALID_HTTPS_URL}/accountbalance/result`,
+      queueURL: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
+      resultURL: `${VALID_HTTPS_URL}/accountbalance/result`,
     });
     //do something ...
     console.log("Account Balance Response:", JSON.stringify(response, null, 2));
@@ -154,7 +154,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`To expose this locally, run: ngrok http ${PORT}`);
-  console.log(`Ensure the public URL provided by ngrok is set as the 'resultUrl' and 'queueUrl' in your M-Pesa request`);
+  console.log(`Ensure the public URL provided by ngrok is set as the 'resultURL' and 'queueURL' in your M-Pesa request`);
 });
 ```
 
@@ -165,8 +165,8 @@ When using the default **callback handlers**, the response includes the main API
       idType: 2, // Example: 2 (Till Number)
       shortCode: 600977,
       initiator: INITIATOR_NAME,
-      queueUrl: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
-      resultUrl: `${VALID_HTTPS_URL}/accountbalance/result`,
+      queueURL: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
+      resultURL: `${VALID_HTTPS_URL}/accountbalance/result`,
     });
     //do something ...
     console.log("Account Balance Response:", JSON.stringify(response, null, 2));
@@ -236,8 +236,8 @@ Here is a comprehensive list of all supported APIs along with their respective *
 export interface balanceQueryOptions {
   partyA: number;
   identifierType: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   initiator: string;
   remarks: string;
 }
@@ -246,8 +246,8 @@ export interface b2cRequestOptions {
   partyA: number;
   partyB: string;
   amount: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   commandId: string;
   initiatorName: string;
   remarks: string;
@@ -255,8 +255,8 @@ export interface b2cRequestOptions {
 }
 
 export interface c2bRegisterOptions {
-  confirmationUrl: string;
-  validationUrl: string;
+  confirmationURL: string;
+  validationURL: string;
   shortCode: number;
   responseType: string;
 }
@@ -272,7 +272,7 @@ export interface mpesaSimulateOptions {
   partyA: string;
   phoneNumber: string;
   amount: number;
-  callbackUrl: string;
+  callbackURL: string;
   accountRef: string;
   transactionType: string;
   partyB: number;
@@ -287,8 +287,8 @@ export interface mpesaQueryOptions {
 export interface reversalsOptions {
   transactionId: string;
   amount: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   receiverParty: string;
   initiator: string;
   receiverIdType: string;
@@ -300,8 +300,8 @@ export interface transactionStatusOptions {
   transactionId: string;
   partyA: number;
   identifierType: number;
-  QueueTimeOutUrl: string;
-  resultUrl: string;
+  QueueTimeOutURL: string;
+  resultURL: string;
   initiator: string;
   OriginatorConversationID: string;
   remarks: string;
@@ -479,4 +479,4 @@ We welcome **contributions**! Follow these steps to get started:
 
 ## License
 
-MIT
+**APACHE 2.0**
