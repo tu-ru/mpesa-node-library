@@ -2,8 +2,8 @@
 
 **M-Pesa Library for Node.js using REST API**
 
-![Node Mpesa Rest API](https://i.imghippo.com/files/fQO9155Kic.jpg
-)
+![Node Mpesa Rest API](https://i.imghippo.com/files/fQO9155Kic.jpg)
+
 <div style="display: flex; justify-content: flex-end;">
 <img width="96" height="96" src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="JavaScript Logo"/>
 </div>
@@ -15,9 +15,9 @@
 
 ## Prerequisites
 
-* **Node.js v20+** – Ensure you have Node.js version 20 or later installed for improved performance, security, and
+- **Node.js v20+** – Ensure you have Node.js version 20 or later installed for improved performance, security, and
   compatibility.
-* **Ngrok CLI** – Install the [**Ngrok CLI**](https://download.ngrok.com/) to expose your local server for testing M-Pesa
+- **Ngrok CLI** – Install the [**Ngrok CLI**](https://download.ngrok.com/) to expose your local server for testing M-Pesa
   callbacks. Ensure you have followed the official guide on how to setup Ngrok
 
 ## Installation
@@ -98,8 +98,8 @@ import { mpesa } from "mpesa-node";
 const { balanceQuery } = mpesa;
 
 // Ensure you replace these placeholders with valid values
-// For the url, check on how to handle callbacks, paste the url provided below 
-const VALID_HTTPS_URL = "paste here"; 
+// For the url, check on how to handle callbacks, paste the url provided below
+const VALID_HTTPS_URL = "paste here";
 const INITIATOR_NAME = "yourInitiatorUsername";
 
 async function checkAccountBalance() {
@@ -154,23 +154,25 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`To expose this locally, run: ngrok http ${PORT}`);
-  console.log(`Ensure the public URL provided by ngrok is set as the 'resultURL' and 'queueURL' in your M-Pesa request`);
+  console.log(
+    `Ensure the public URL provided by ngrok is set as the 'resultURL' and 'queueURL' in your M-Pesa request`,
+  );
 });
 ```
 
 When using the default **callback handlers**, the response includes the main API `balanceQuery` response body, along with either a **result** or **queue** callback body.
 
 ```js
- const response = await balanceQuery({
-      idType: 2, // Example: 2 (Till Number)
-      shortCode: 600977,
-      initiator: INITIATOR_NAME,
-      queueURL: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
-      resultURL: `${VALID_HTTPS_URL}/accountbalance/result`,
-    });
-    //do something ...
-    console.log("Account Balance Response:", JSON.stringify(response, null, 2));
-    /*
+const response = await balanceQuery({
+  idType: 2, // Example: 2 (Till Number)
+  shortCode: 600977,
+  initiator: INITIATOR_NAME,
+  queueURL: `${VALID_HTTPS_URL}/accountbalance/queuetimeouturl`,
+  resultURL: `${VALID_HTTPS_URL}/accountbalance/result`,
+});
+//do something ...
+console.log("Account Balance Response:", JSON.stringify(response, null, 2));
+/*
         if callback handlers are used expect such a json response...
         "Account balance response": {
           "balanceResponse": {
@@ -193,7 +195,6 @@ When using the default **callback handlers**, the response includes the main API
 ```
 
 **NOTE**: At all costs avoid using URLs offered by **Ngrok** for **production** or **going live**
-
 
 ## Supported API endpoints:
 
@@ -231,7 +232,9 @@ Here is a comprehensive list of all supported API endpoints with their respectiv
 Developers are strongly encouraged to consult the [**JsDocs**](./docs/global.html) (_which comes bundled with the library_) for detailed information on how the required fields are mapped. This documentation clearly outlines the necessary configurations for successfully initiating any endpoint, ensuring a smooth integration process.
 
 ### Options for each API
+
 Here is a comprehensive list of all supported APIs along with their respective **options**. Use this as a reference when configuring the parameters for your chosen API.
+
 ```ts
 export interface balanceQueryOptions {
   partyA: number;
@@ -352,10 +355,13 @@ export interface taxRemittanceOptions {
   remarks: string;
 }
 ```
+
 ### MSISDN formatting
+
 When working with APIs that require an `msisdn` (a **phone number**), always provide it as a `string` in the format: `0708374149`. The library automatically processes the number into the required format, so no additional configuration is needed.
 
 ### External configurations
+
 Certain endpoints require external configurations to function correctly, particularly when working in a production environment. For seamless integration and optimal performance, it is crucial to review the API documentation thoroughly. Some APIs, such as **taxRemittance**, **b2cRequest** and **c2bRegister**, may depend on additional setup or external parameters that are necessary for proper functionality.
 
 In a **production development** setting, these configurations are especially critical to ensure that all aspects of the API perform as expected. It is highly recommended that developers pay close attention to the specific requirements outlined in the [**official documentation**](https://developer.safaricom.co.ke/APIs) for each API. Relying on the most up-to-date and detailed guidelines from the official sources will help mitigate potential issues and ensure smooth integration.
@@ -370,10 +376,10 @@ works reliably in actual usage scenarios.
 
 **BDD approach** + **on integration tests**, can help:
 
-* Catch authentication issues (**OAuth failures**)
-* Verify actual API responses (**instead of mocked ones**)
-* Check if callbacks are received & handled properly
-* Detect network timeouts or incorrect response formats
+- Catch authentication issues (**OAuth failures**)
+- Verify actual API responses (**instead of mocked ones**)
+- Check if callbacks are received & handled properly
+- Detect network timeouts or incorrect response formats
 
 To run tests, first, **clone this repository**.
 
@@ -386,7 +392,7 @@ connection** to accurately simulate **real API interactions** over **HTTPS**.
 
 ### Activating callback handlers in tests
 
-Callback handlers in **testing** are automatically configured but **disabled** by default. 
+Callback handlers in **testing** are automatically configured but **disabled** by default.
 
 Below is an example of a `c2bSimulate` **mocha** test. To activate callback handling swap `true` to `false`.
 
@@ -396,23 +402,27 @@ import { mpesa } from "../../../../index.js";
 import { setupNgrokServer } from "../utils/server.js";
 import { createOptionsForC2bSimulate } from "../utils/options.js";
 
-describe("C2B Simulate API with OAuth", function() {
+describe("C2B Simulate API with OAuth", function () {
   this.timeout(28000);
   let NGROK_URL, teardown;
   const { c2bSimulate } = mpesa;
 
   // To enable callback handling swap true to false
-  before(async function() {
-    // ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", true)); 
-    ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", false)); 
+  before(async function () {
+    // ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", true));
+    ({ NGROK_URL, teardown } = await setupNgrokServer("c2bSimulate", false));
   });
 
-  after(async function() {
+  after(async function () {
     await teardown();
   });
 
-  it("Should simulate a C2B transaction", function(done) {
-    c2bSimulate(createOptionsForC2bSimulate(NGROK_URL === "" ? "https://mock.url" : NGROK_URL))
+  it("Should simulate a C2B transaction", function (done) {
+    c2bSimulate(
+      createOptionsForC2bSimulate(
+        NGROK_URL === "" ? "https://mock.url" : NGROK_URL,
+      ),
+    )
       .then((responseBody) => {
         expect(responseBody).to.be.an("object");
         console.log("RESPONSE BODY:", JSON.stringify(responseBody, null, 2));
@@ -421,16 +431,15 @@ describe("C2B Simulate API with OAuth", function() {
       .catch(done);
   });
 });
-
 ```
 
 ### Temporary port exposure
 
 Once the callback handler is enabled, the boolean option (`false` allows the test to temporarily:
 
-* Spawn a local server
-* Expose it via Ngrok
-* Fetch responses from API endpoint servers
+- Spawn a local server
+- Expose it via Ngrok
+- Fetch responses from API endpoint servers
 
 This setup ensures that callbacks are properly handled during testing.
 
@@ -473,9 +482,9 @@ We welcome **contributions**! Follow these steps to get started:
 
 **Contributors**
 
-* [DGatere](https://github.com/DGatere)
-* [geofmureithi](https://github.com/geofmureithi)
-* [Waturu Samm](https://github.com/tu-ru/)
+- [DGatere](https://github.com/DGatere)
+- [geofmureithi](https://github.com/geofmureithi)
+- [Waturu Samm](https://github.com/tu-ru/)
 
 ## License
 
