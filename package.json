@@ -1,7 +1,7 @@
 {
   "name": "mpesa-node",
   "version": "0.1.3",
-  "description": "Node M-Pesa Library",
+  "description": "A Node.js library that integrates Daraja-2.0 APIs",
   "main": "./index.js",
   "repository": {
     "type": "git",
@@ -47,9 +47,26 @@
   },
   "keywords": [
     "mpesa",
-    "mpesa-node",
-    "mpesa-api"
+    "mpesa node js",
+    "mpesa api",
+    "daraja api",
+    "mpesa integration",
+    "mpesa sdk",
+    "mpesa node library",
+    "mpesa node module",
+    "safaricom mpesa",
+    "mpesa payment gateway"
   ],
   "author": "Geoffrey Mureithi",
-  "license": "MIT"
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Samm waturu",
+      "email": "muiruri.samwel@outlook.com"
+    },
+    {
+      "name": "Dgatere",
+      "email": ""
+    }
+  ]
 }
